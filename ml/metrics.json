@@ -1,0 +1,96 @@
+{
+  "regression": {
+    "mae": 4.031,
+    "rmse": 4.885,
+    "r2_score": 0.554,
+    "feature_importance": {
+      "Attendance": 0.036,
+      "Study_Hours": 0.048,
+      "Assignment_Marks": 0.0939,
+      "Quiz_Marks": 0.0597,
+      "Lab_Marks": 0.2773,
+      "Internal_Marks": 0.1717,
+      "Previous_Semester_Marks": 0.2621,
+      "Project_Marks": 0.0512
+    },
+    "n_estimators": 300,
+    "test_size": 0.2
+  },
+  "classification": {
+    "accuracy": 0.989,
+    "precision": 0.989,
+    "recall": 1.0,
+    "f1_score": 0.994,
+    "confusion_matrix": [
+      [
+        4,
+        1
+      ],
+      [
+        0,
+        88
+      ]
+    ],
+    "labels": [
+      "Fail",
+      "Pass"
+    ],
+    "roc_auc": 1.0,
+    "roc_points": [
+      {
+        "fpr": 0.0,
+        "tpr": 0.0
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.6364
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.6591
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.6705
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.6932
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.7045
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.75
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.7727
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 0.7955
+      },
+      {
+        "fpr": 0.0,
+        "tpr": 1.0
+      },
+      {
+        "fpr": 1.0,
+        "tpr": 1.0
+      }
+    ],
+    "feature_importance": {
+      "Attendance": 0.0284,
+      "Study_Hours": 0.0198,
+      "Assignment_Marks": 0.2892,
+      "Quiz_Marks": 0.0539,
+      "Lab_Marks": 0.1476,
+      "Internal_Marks": 0.1648,
+      "Previous_Semester_Marks": 0.1234,
+      "Project_Marks": 0.1729
+    }
+  }
+}

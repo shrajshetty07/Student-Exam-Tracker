@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Risk Analysis{% endblock %}
+{% block page_title %}At-Risk Students{% endblock %}
+{% block page_sub %}Students flagged Medium/High risk of failing by the AI classifier{% endblock %}
+
+{% block content %}
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Student</th><th>Subject</th><th>Attendance</th><th>Predicted Score</th><th>Fail Probability</th><th>Risk Level</th></tr></thead>
+    <tbody>
+    {% for r in at_risk %}
+      <tr>
+        <td style="font-weight:600;">{{ r.student_name }}</td>
+        <td>{{ r.subject_name }}</td>
+        <td>{{ r.Attendance }}%</td>
+        <td>{{ r.Predicted_Score }}/50</td>
+        <td>{{ r.Fail_Probability }}%</td>
+        <td><span class="badge-status badge-{{ r.Risk_Level|lower }}">{{ r.Risk_Level }}</span></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-shield-heart"></i><p>No at-risk students detected right now. 🎉</p></div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

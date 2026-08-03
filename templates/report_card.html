@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Report Card - {{ student.name }}{% endblock %}
+{% block page_title %}Report Card{% endblock %}
+{% block page_sub %}{{ student.name }} · {{ student.student_id }}{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h4 style="margin-bottom:2px;">{{ student.name }}</h4>
+      <div class="section-sub">{{ student.department_name }} · Semester {{ student.semester }} · Generated {{ generated_on }}</div>
+    </div>
+    <a href="{{ url_for('reports.report_card_pdf', student_id=student.student_id) }}" class="btn btn-primary"><i class="fa-solid fa-file-pdf"></i> Download PDF</a>
+  </div>
+
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Subject</th><th>Assign.</th><th>Quiz</th><th>Lab</th><th>Internal</th><th>Project</th><th>Final</th><th>Total</th><th>%</th><th>Grade</th><th>Result</th></tr></thead>
+    <tbody>
+    {% for m in marks %}
+      <tr>
+        <td>{{ m.subject_name }}</td><td>{{ m.assignment_marks }}</td><td>{{ m.quiz_marks }}</td><td>{{ m.lab_marks }}</td>
+        <td>{{ m.internal_marks }}</td><td>{{ m.project_marks }}</td><td>{{ m.final_exam_marks }}</td>
+        <td><b>{{ m.total_marks }}</b></td><td>{{ m.percentage }}%</td>
+        <td><span class="badge-status badge-grade">{{ m.grade }}</span></td>
+        <td><span class="badge-status {% if m.pass_fail=='Pass' %}badge-pass{% else %}badge-fail{% endif %}">{{ m.pass_fail }}</span></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="11" class="text-center text-muted py-3">No marks recorded.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <div class="d-flex gap-4 mt-3">
+    <div><span class="section-sub">Overall Percentage: </span><b>{{ overall_percentage }}%</b></div>
+    <div><span class="section-sub">Overall Result: </span><span class="badge-status {% if overall_result=='Pass' %}badge-pass{% else %}badge-fail{% endif %}">{{ overall_result }}</span></div>
+  </div>
+</div>
+{% endblock %}

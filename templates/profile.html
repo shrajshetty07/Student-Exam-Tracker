@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block page_title %}Profile{% endblock %}
+{% block page_sub %}Manage your admin account{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-3">Profile Details</div>
+      <form method="POST">
+        <input type="hidden" name="action" value="update_profile">
+        <label class="form-label-modern">Full Name</label>
+        <input type="text" name="full_name" class="form-control-modern mb-3" value="{{ admin.full_name }}" required>
+        <label class="form-label-modern">Email</label>
+        <input type="email" name="email" class="form-control-modern mb-3" value="{{ admin.email }}" required>
+        <label class="form-label-modern">Username</label>
+        <input type="text" class="form-control-modern mb-3" value="{{ admin.username }}" disabled>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-3">Change Password</div>
+      <form method="POST">
+        <input type="hidden" name="action" value="change_password">
+        <label class="form-label-modern">Current Password</label>
+        <input type="password" name="current_password" class="form-control-modern mb-3" required>
+        <label class="form-label-modern">New Password</label>
+        <input type="password" name="new_password" class="form-control-modern mb-3" required minlength="6">
+        <label class="form-label-modern">Confirm New Password</label>
+        <input type="password" name="confirm_password" class="form-control-modern mb-3" required minlength="6">
+        <button type="submit" class="btn btn-outline-soft"><i class="fa-solid fa-key"></i> Update Password</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ request.cookies.get('edutrack-theme', 'light') }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Dashboard{% endblock %} · EduTrack AI</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script>
+  window.__EDUTRACK_THEME__ = "{{ request.cookies.get('edutrack-theme', 'light') }}";
+</script>
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<div class="toast-stack" id="toastStack"></div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div style="display:none;" data-flash="{{ message }}" data-category="{{ category }}"></div>
+  {% endfor %}
+{% endwith %}
+
+<div id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:39;"></div>
+
+<div class="app-shell">
+  <aside class="sidebar" id="appSidebar">
+    <div class="sidebar-brand">
+      <div class="logo-mark"><i class="fa-solid fa-graduation-cap"></i></div>
+      <span>EduTrack <span style="color:var(--color-primary);">AI</span></span>
+    </div>
+
+    <div class="nav-section-label">Overview</div>
+    <a href="{{ url_for('main.dashboard') }}" class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+      <i class="fa-solid fa-gauge-high"></i> Dashboard
+    </a>
+    <a href="{{ url_for('analytics.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('analytics.') %}active{% endif %}">
+      <i class="fa-solid fa-chart-line"></i> Analytics
+    </a>
+
+    <div class="nav-section-label">Academics</div>
+    <a href="{{ url_for('students.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('students.') %}active{% endif %}">
+      <i class="fa-solid fa-user-graduate"></i> Students
+    </a>
+    <a href="{{ url_for('subjects.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('subjects.') %}active{% endif %}">
+      <i class="fa-solid fa-book"></i> Subjects
+    </a>
+    <a href="{{ url_for('marks.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('marks.') %}active{% endif %}">
+      <i class="fa-solid fa-pen-to-square"></i> Marks
+    </a>
+    <a href="{{ url_for('attendance.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('attendance.') %}active{% endif %}">
+      <i class="fa-solid fa-calendar-check"></i> Attendance
+    </a>
+
+    <div class="nav-section-label">AI &amp; Reports</div>
+    <a href="{{ url_for('prediction.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('prediction.') %}active{% endif %}">
+      <i class="fa-solid fa-brain"></i> AI Prediction
+    </a>
+    <a href="{{ url_for('reports.index') }}" class="nav-link {% if request.endpoint and request.endpoint.startswith('reports.') %}active{% endif %}">
+      <i class="fa-solid fa-file-lines"></i> Reports
+    </a>
+
+    <div class="nav-section-label">Account</div>
+    <a href="{{ url_for('main.settings') }}" class="nav-link {% if request.endpoint == 'main.settings' %}active{% endif %}">
+      <i class="fa-solid fa-gear"></i> Settings
+    </a>
+    <a href="{{ url_for('auth.profile') }}" class="nav-link {% if request.endpoint == 'auth.profile' %}active{% endif %}">
+      <i class="fa-solid fa-id-badge"></i> Profile
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="nav-link">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </aside>
+
+  <div class="main-content">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <button class="btn btn-icon btn-outline-soft sidebar-toggle-btn" id="sidebarToggleBtn">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div>
+          <div class="section-title" style="margin:0;">{% block page_title %}Dashboard{% endblock %}</div>
+          <div class="section-sub" style="margin:0;">{% block page_sub %}Welcome back to EduTrack AI{% endblock %}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="theme-toggle" id="themeToggleBtn" title="Toggle theme">
+          <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+        </button>
+        <div style="display:flex;align-items:center;gap:10px;padding-left:12px;border-left:1px solid var(--color-border);">
+          <div class="avatar-circle">{{ session.get('admin_name','A')[0]|upper }}</div>
+          <div class="d-none d-md-block">
+            <div style="font-weight:600;font-size:0.85rem;">{{ session.get('admin_name','Admin') }}</div>
+            <div style="font-size:0.72rem;color:var(--color-text-muted);text-transform:capitalize;">{{ session.get('admin_role','admin') }}</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-body fade-in-up">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

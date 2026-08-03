@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Top Performers{% endblock %}
+{% block page_title %}Top Performers{% endblock %}
+{% block page_sub %}Ranked by average percentage across all subjects{% endblock %}
+
+{% block content %}
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Rank</th><th>Student</th><th>Average %</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr>
+        <td>
+          {% if r.rank == 1 %}<i class="fa-solid fa-trophy" style="color:#f59e0b;"></i>{% endif %}
+          {% if r.rank == 2 %}<i class="fa-solid fa-medal" style="color:#9ca3af;"></i>{% endif %}
+          {% if r.rank == 3 %}<i class="fa-solid fa-medal" style="color:#b45309;"></i>{% endif %}
+          #{{ r.rank }}
+        </td>
+        <td style="font-weight:600;">{{ r.name }}</td>
+        <td><b>{{ r.percentage }}%</b></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="3" class="text-center text-muted py-3">No data available.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

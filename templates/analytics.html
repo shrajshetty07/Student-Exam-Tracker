@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+{% block page_title %}Analytics{% endblock %}
+{% block page_sub %}Deep-dive performance analytics & ML model evaluation{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Pass vs Fail</div>
+      <canvas id="pfChart" height="200"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Grade Distribution</div>
+      <canvas id="gradeChart2" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-12">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Subject-wise Analysis</div>
+      <canvas id="subjChart2" height="140"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2"><i class="fa-solid fa-brain" style="color:var(--color-primary);"></i> Classifier Evaluation (Pass/Fail)</div>
+      {% if metrics.classification %}
+      <table class="table-modern">
+        <tbody>
+          <tr><td>Accuracy</td><td><b>{{ (metrics.classification.accuracy*100)|round(2) }}%</b></td></tr>
+          <tr><td>Precision</td><td><b>{{ (metrics.classification.precision*100)|round(2) }}%</b></td></tr>
+          <tr><td>Recall</td><td><b>{{ (metrics.classification.recall*100)|round(2) }}%</b></td></tr>
+          <tr><td>F1 Score</td><td><b>{{ (metrics.classification.f1_score*100)|round(2) }}%</b></td></tr>
+          <tr><td>ROC AUC</td><td><b>{{ metrics.classification.roc_auc }}</b></td></tr>
+        </tbody>
+      </table>
+      <div class="section-sub mt-2 mb-1">Confusion Matrix ({{ metrics.classification.labels }})</div>
+      <table class="table-modern">
+        {% for row in metrics.classification.confusion_matrix %}
+          <tr>{% for v in row %}<td style="text-align:center;font-weight:700;">{{ v }}</td>{% endfor %}</tr>
+        {% endfor %}
+      </table>
+      {% else %}
+        <div class="empty-state"><i class="fa-solid fa-robot"></i><p>Run training scripts to populate metrics.</p></div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2"><i class="fa-solid fa-chart-line" style="color:var(--color-primary);"></i> Regression Evaluation (Score Prediction)</div>
+      {% if metrics.regression %}
+      <table class="table-modern">
+        <tbody>
+          <tr><td>Mean Absolute Error</td><td><b>{{ metrics.regression.mae }}</b></td></tr>
+          <tr><td>RMSE</td><td><b>{{ metrics.regression.rmse }}</b></td></tr>
+          <tr><td>R² Score</td><td><b>{{ metrics.regression.r2_score }}</b></td></tr>
+        </tbody>
+      </table>
+      <div class="section-sub mt-2 mb-1">Feature Importance</div>
+      <canvas id="featImpChart" height="180"></canvas>
+      {% else %}
+        <div class="empty-state"><i class="fa-solid fa-robot"></i><p>Run training scripts to populate metrics.</p></div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const pf = {{ pass_fail_counts | tojson }};
+new Chart(document.getElementById('pfChart'), {
+  type: 'doughnut',
+  data: {
+    labels: pf.map(x => x.pass_fail),
+    datasets: [{ data: pf.map(x => x.cnt), backgroundColor: ['#10b981', '#ef4444'] }]
+  }
+});
+
+const grades = {{ grades | tojson }};
+new Chart(document.getElementById('gradeChart2'), {
+  type: 'bar',
+  data: { labels: grades.map(g=>g.grade), datasets: [{ label:'Count', data: grades.map(g=>g.cnt), backgroundColor:'#f59e0b', borderRadius:6 }] },
+  options: { plugins: { legend: { display:false } } }
+});
+
+const subj = {{ subject_avgs | tojson }};
+new Chart(document.getElementById('subjChart2'), {
+  type: 'bar',
+  data: { labels: subj.map(s=>s.subject_name), datasets: [{ label:'Avg %', data: subj.map(s=>s.avg_percentage), backgroundColor:'#4f46e5', borderRadius:6 }] },
+  options: { plugins: { legend: { display:false } }, scales: { y: { max: 100 } } }
+});
+
+{% if metrics.regression %}
+const feat = {{ metrics.regression.feature_importance | tojson }};
+new Chart(document.getElementById('featImpChart'), {
+  type: 'bar',
+  data: { labels: Object.keys(feat), datasets: [{ label:'Importance', data: Object.values(feat), backgroundColor:'#3b82f6', borderRadius:6 }] },
+  options: { indexAxis:'y', plugins: { legend:{display:false} } }
+});
+{% endif %}
+</script>
+{% endblock %}

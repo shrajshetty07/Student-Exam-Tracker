@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Marks{% endblock %}
+{% block page_title %}Marks{% endblock %}
+{% block page_sub %}All recorded marks across students & subjects{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p mb-3">
+  <form method="GET" class="row g-2 align-items-end">
+    <div class="col-md-3">
+      <label class="form-label-modern">Department</label>
+      <select name="department_id" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for d in departments %}<option value="{{ d.department_id }}" {% if department_id == d.department_id %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label-modern">Semester</label>
+      <select name="semester" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for i in range(1,9) %}<option value="{{ i }}" {% if semester == i %}selected{% endif %}>Sem {{ i }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label-modern">Subject</label>
+      <select name="subject_id" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for s in subjects %}<option value="{{ s.subject_id }}" {% if subject_id == s.subject_id %}selected{% endif %}>{{ s.subject_name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label-modern">Result</label>
+      <select name="pass_fail" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="Pass" {% if pass_fail == 'Pass' %}selected{% endif %}>Pass</option>
+        <option value="Fail" {% if pass_fail == 'Fail' %}selected{% endif %}>Fail</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <a href="{{ url_for('marks.entry') }}" class="btn btn-primary w-100"><i class="fa-solid fa-plus"></i> Enter Marks</a>
+    </div>
+  </form>
+</div>
+
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Student</th><th>Subject</th><th>Attendance</th><th>Total</th><th>%</th><th>Grade</th><th>Result</th><th style="text-align:right;">Actions</th></tr></thead>
+    <tbody>
+    {% for m in marks %}
+      <tr>
+        <td style="font-weight:600;">{{ m.student_name }}</td>
+        <td>{{ m.subject_name }}</td>
+        <td>{{ m.attendance_percentage }}%</td>
+        <td>{{ m.total_marks }}/130</td>
+        <td>{{ m.percentage }}%</td>
+        <td><span class="badge-status badge-grade">{{ m.grade }}</span></td>
+        <td><span class="badge-status {% if m.pass_fail == 'Pass' %}badge-pass{% else %}badge-fail{% endif %}">{{ m.pass_fail }}</span></td>
+        <td style="text-align:right;">
+          <form method="POST" action="{{ url_for('marks.delete', student_id=m.student_id, subject_id=m.subject_id) }}" style="display:inline;" data-confirm="Delete this mark record?">
+            <button type="submit" class="btn btn-icon btn-danger-soft btn-sm"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-pen-to-square"></i><p>No marks recorded. <a href="{{ url_for('marks.entry') }}">Enter marks</a>.</p></div></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

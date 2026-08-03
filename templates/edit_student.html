@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Edit Student{% endblock %}
+{% block page_title %}Edit Student{% endblock %}
+{% block page_sub %}{{ student.student_id }}{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p" style="max-width:720px;">
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label-modern">Student ID</label>
+        <input type="text" class="form-control-modern" value="{{ student.student_id }}" disabled>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Full Name *</label>
+        <input type="text" name="name" class="form-control-modern" required value="{{ student.name }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Gender *</label>
+        <select name="gender" class="form-select-modern" required>
+          <option value="Male" {% if student.gender=='Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if student.gender=='Female' %}selected{% endif %}>Female</option>
+          <option value="Other" {% if student.gender=='Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Department *</label>
+        <input list="deptList" name="department_name" class="form-control-modern" required value="{{ student.department_name }}">
+        <datalist id="deptList">
+          {% for d in departments %}<option value="{{ d.name }}">{% endfor %}
+        </datalist>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Semester *</label>
+        <select name="semester" class="form-select-modern" required>
+          {% for i in range(1,9) %}
+            <option value="{{ i }}" {% if student.semester == i %}selected{% endif %}>Semester {{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Admission Year</label>
+        <input type="number" name="admission_year" class="form-control-modern" value="{{ student.admission_year or '' }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Email</label>
+        <input type="email" name="email" class="form-control-modern" value="{{ student.email or '' }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Phone</label>
+        <input type="text" name="phone" class="form-control-modern" value="{{ student.phone or '' }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Date of Birth</label>
+        <input type="date" name="date_of_birth" class="form-control-modern" value="{{ student.date_of_birth or '' }}">
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Update Student</button>
+      <a href="{{ url_for('students.index') }}" class="btn btn-outline-soft">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

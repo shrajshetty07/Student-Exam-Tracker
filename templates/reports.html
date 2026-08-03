@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}Reports{% endblock %}
+{% block page_sub %}Generate and export academic reports{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('reports.top_performers_report') }}" class="card-glass card-body-p d-block">
+      <div class="stat-icon icon-badge-success"><i class="fa-solid fa-trophy"></i></div>
+      <div class="section-title">Top Performers</div>
+      <div class="section-sub">Ranked leaderboard</div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('reports.subject_analysis') }}" class="card-glass card-body-p d-block">
+      <div class="stat-icon icon-badge-info"><i class="fa-solid fa-chart-simple"></i></div>
+      <div class="section-title">Subject Analysis</div>
+      <div class="section-sub">Averages per subject</div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('reports.attendance_report') }}" class="card-glass card-body-p d-block">
+      <div class="stat-icon icon-badge-warning"><i class="fa-solid fa-calendar-check"></i></div>
+      <div class="section-title">Attendance Report</div>
+      <div class="section-sub">By department</div>
+    </a>
+  </div>
+  <div class="col-md-6 col-lg-3">
+    <a href="{{ url_for('reports.semester_report') }}" class="card-glass card-body-p d-block">
+      <div class="stat-icon icon-badge-primary"><i class="fa-solid fa-layer-group"></i></div>
+      <div class="section-title">Semester Report</div>
+      <div class="section-sub">Full marks export (CSV/Excel)</div>
+    </a>
+  </div>
+</div>
+
+<div class="card-glass card-body-p mt-3">
+  <div class="section-title mb-2">Individual Student Report Card</div>
+  <form method="GET" id="rcForm" style="display:flex;gap:10px;max-width:520px;">
+    <select id="rcStudent" class="form-select-modern" required>
+      <option value="">Select a student</option>
+      {% for s in students %}
+        <option value="{{ url_for('reports.report_card', student_id=s.student_id) }}">{{ s.name }} ({{ s.student_id }})</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-file-lines"></i> View</button>
+  </form>
+  <script>
+    document.getElementById('rcForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const url = document.getElementById('rcStudent').value;
+      if (url) window.location = url;
+    });
+  </script>
+</div>
+{% endblock %}

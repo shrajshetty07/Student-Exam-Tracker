@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block page_title %}Settings{% endblock %}
+{% block page_sub %}Application preferences{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Appearance</div>
+      <p class="section-sub">Toggle between light and dark mode using the sun/moon icon in the top bar. Your preference is saved automatically.</p>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Database</div>
+      <p class="section-sub">This installation uses a local SQLite database (<code>instance/student_tracker.db</code>) that mirrors the MySQL schema in <code>database.sql</code>. See the README for MySQL production deployment steps.</p>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">AI Models</div>
+      <p class="section-sub">Retrain the prediction models any time your data changes:</p>
+      <pre style="background:var(--color-bg-alt);padding:12px;border-radius:10px;font-size:0.8rem;">python ml/train_regression.py
+python ml/train_classifier.py</pre>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Account</div>
+      <p class="section-sub">Manage your admin profile and password from the <a href="{{ url_for('auth.profile') }}">Profile</a> page.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

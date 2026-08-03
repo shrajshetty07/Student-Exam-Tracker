@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Attendance Report{% endblock %}
+{% block page_title %}Attendance Report{% endblock %}
+{% block page_sub %}Average attendance by department{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p mb-3">
+  <canvas id="attBar" height="120"></canvas>
+</div>
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Department</th><th>Average Attendance</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr><td>{{ r.department_name }}</td><td><b>{{ r.avg_attendance|round(2) }}%</b></td></tr>
+    {% else %}
+      <tr><td colspan="2" class="text-center text-muted py-3">No attendance data yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const rows = {{ rows | tojson }};
+new Chart(document.getElementById('attBar'), {
+  type: 'bar',
+  data: { labels: rows.map(r=>r.department_name), datasets: [{ label:'Attendance %', data: rows.map(r=>r.avg_attendance), backgroundColor:'#3b82f6', borderRadius:6 }] },
+  options: { plugins:{legend:{display:false}}, scales:{y:{max:100}} }
+});
+</script>
+{% endblock %}

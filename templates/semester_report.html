@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Semester Report{% endblock %}
+{% block page_title %}Semester Report{% endblock %}
+{% block page_sub %}Full marks export across students{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p mb-3">
+  <form method="GET" class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label-modern">Department</label>
+      <select name="department_id" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for d in departments %}<option value="{{ d.department_id }}" {% if department_id==d.department_id %}selected{% endif %}>{{ d.name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label-modern">Semester</label>
+      <select name="semester" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for i in range(1,9) %}<option value="{{ i }}" {% if semester==i %}selected{% endif %}>Sem {{ i }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-5 d-flex gap-2 justify-content-end">
+      <a href="{{ url_for('reports.semester_report_export', fmt='csv', department_id=department_id, semester=semester) }}" class="btn btn-outline-soft"><i class="fa-solid fa-file-csv"></i> Export CSV</a>
+      <a href="{{ url_for('reports.semester_report_export', fmt='excel', department_id=department_id, semester=semester) }}" class="btn btn-outline-soft"><i class="fa-solid fa-file-excel"></i> Export Excel</a>
+    </div>
+  </form>
+</div>
+
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Student</th><th>Subject</th><th>Total</th><th>%</th><th>Grade</th><th>Result</th></tr></thead>
+    <tbody>
+    {% for m in marks %}
+      <tr>
+        <td>{{ m.student_name }}</td><td>{{ m.subject_name }}</td><td>{{ m.total_marks }}</td><td>{{ m.percentage }}%</td>
+        <td><span class="badge-status badge-grade">{{ m.grade }}</span></td>
+        <td><span class="badge-status {% if m.pass_fail=='Pass' %}badge-pass{% else %}badge-fail{% endif %}">{{ m.pass_fail }}</span></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="text-center text-muted py-3">No records found.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

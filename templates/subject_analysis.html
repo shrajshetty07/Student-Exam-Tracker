@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Subject Analysis{% endblock %}
+{% block page_title %}Subject Analysis{% endblock %}
+{% block page_sub %}Average performance per subject{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p mb-3">
+  <canvas id="subjBar" height="120"></canvas>
+</div>
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead><tr><th>Subject</th><th>Avg %</th><th>Records</th></tr></thead>
+    <tbody>
+    {% for r in rows %}
+      <tr><td>{{ r.subject_name }}</td><td><b>{{ r.avg_percentage|round(2) }}%</b></td><td>{{ r.n }}</td></tr>
+    {% else %}
+      <tr><td colspan="3" class="text-center text-muted py-3">No data available.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const rows = {{ rows | tojson }};
+new Chart(document.getElementById('subjBar'), {
+  type: 'bar',
+  data: { labels: rows.map(r=>r.subject_name), datasets: [{ label:'Avg %', data: rows.map(r=>r.avg_percentage), backgroundColor:'#4f46e5', borderRadius:6 }] },
+  options: { plugins:{legend:{display:false}}, scales:{y:{max:100}} }
+});
+</script>
+{% endblock %}

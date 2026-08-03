@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Enter Marks{% endblock %}
+{% block page_title %}Enter Marks{% endblock %}
+{% block page_sub %}Total, percentage, grade & pass/fail are calculated automatically{% endblock %}
+
+{% block content %}
+<div class="card-glass card-body-p" style="max-width:820px;">
+  <form method="POST">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label-modern">Student *</label>
+        <select name="student_id" class="form-select-modern" required>
+          <option value="">Select student</option>
+          {% for s in students %}<option value="{{ s.student_id }}">{{ s.name }} ({{ s.student_id }})</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label-modern">Subject *</label>
+        <select name="subject_id" class="form-select-modern" required>
+          <option value="">Select subject</option>
+          {% for s in subjects %}<option value="{{ s.subject_id }}">{{ s.subject_name }} ({{ s.subject_code }})</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <hr style="border-color:var(--color-border);margin:20px 0;">
+    <div class="section-title mb-2">Assessment Marks</div>
+    <div class="row g-3">
+      <div class="col-md-3"><label class="form-label-modern">Assignment (/20)</label><input type="number" step="0.1" min="0" max="20" name="assignment_marks" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Quiz (/10)</label><input type="number" step="0.1" min="0" max="10" name="quiz_marks" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Lab (/20)</label><input type="number" step="0.1" min="0" max="20" name="lab_marks" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Internal (/20)</label><input type="number" step="0.1" min="0" max="20" name="internal_marks" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Project (/10)</label><input type="number" step="0.1" min="0" max="10" name="project_marks" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Final Exam (/50)</label><input type="number" step="0.1" min="0" max="50" name="final_exam_marks" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Attendance (%)</label><input type="number" step="0.1" min="0" max="100" name="attendance_percentage" class="form-control-modern" value="0"></div>
+      <div class="col-md-3"><label class="form-label-modern">Study Hours / week</label><input type="number" step="0.1" min="0" name="study_hours" class="form-control-modern" value="0"></div>
+      <div class="col-md-6"><label class="form-label-modern">Previous Semester Marks (%)</label><input type="number" step="0.1" min="0" max="100" name="previous_semester_marks" class="form-control-modern" value="0"></div>
+    </div>
+
+    <div class="d-flex gap-2 mt-4">
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-calculator"></i> Save & Auto-Calculate</button>
+      <a href="{{ url_for('marks.index') }}" class="btn btn-outline-soft">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

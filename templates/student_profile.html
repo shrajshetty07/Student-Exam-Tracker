@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }}{% endblock %}
+{% block page_title %}{{ student.name }}{% endblock %}
+{% block page_sub %}{{ student.student_id }} · {{ student.department_name }} · Semester {{ student.semester }}{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card-glass card-body-p text-center">
+      <div class="avatar-circle" style="width:72px;height:72px;font-size:1.6rem;margin:0 auto 14px;">{{ student.name[0]|upper }}</div>
+      <h5 style="margin-bottom:2px;">{{ student.name }}</h5>
+      <div class="section-sub mb-3">{{ student.email or 'No email on file' }}</div>
+      <div class="d-flex justify-content-center gap-2">
+        <a href="{{ url_for('students.edit', student_id=student.student_id) }}" class="btn btn-outline-soft btn-sm"><i class="fa-solid fa-pen"></i> Edit</a>
+        <a href="{{ url_for('reports.report_card', student_id=student.student_id) }}" class="btn btn-primary btn-sm"><i class="fa-solid fa-file-lines"></i> Report Card</a>
+      </div>
+      <hr style="border-color:var(--color-border);">
+      <div class="text-start" style="font-size:0.85rem;">
+        <p class="d-flex justify-content-between"><span class="section-sub">Gender</span><b>{{ student.gender }}</b></p>
+        <p class="d-flex justify-content-between"><span class="section-sub">Phone</span><b>{{ student.phone or '—' }}</b></p>
+        <p class="d-flex justify-content-between"><span class="section-sub">Admission Year</span><b>{{ student.admission_year or '—' }}</b></p>
+        <p class="d-flex justify-content-between mb-0"><span class="section-sub">Date of Birth</span><b>{{ student.date_of_birth or '—' }}</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card-glass card-body-p mb-3">
+      <div class="section-title mb-2">Marks Summary</div>
+      <div style="overflow-x:auto;">
+      <table class="table-modern">
+        <thead><tr><th>Subject</th><th>Attendance</th><th>Total</th><th>%</th><th>Grade</th><th>Result</th></tr></thead>
+        <tbody>
+        {% for m in marks %}
+          <tr>
+            <td>{{ m.subject_name }}</td>
+            <td>{{ m.attendance_percentage }}%</td>
+            <td>{{ m.total_marks }}/130</td>
+            <td>{{ m.percentage }}%</td>
+            <td><span class="badge-status badge-grade">{{ m.grade }}</span></td>
+            <td><span class="badge-status {% if m.pass_fail == 'Pass' %}badge-pass{% else %}badge-fail{% endif %}">{{ m.pass_fail }}</span></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="text-center text-muted py-3">No marks recorded yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="card-glass card-body-p">
+      <div class="section-title mb-2">Attendance Log</div>
+      <div style="overflow-x:auto;">
+      <table class="table-modern">
+        <thead><tr><th>Subject</th><th>Month</th><th>Held</th><th>Attended</th><th>%</th></tr></thead>
+        <tbody>
+        {% for a in attendance %}
+          <tr>
+            <td>{{ a.subject_name }}</td>
+            <td>{{ a.month }} {{ a.year }}</td>
+            <td>{{ a.classes_held }}</td>
+            <td>{{ a.classes_attended }}</td>
+            <td>{{ a.percentage }}%</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-3">No attendance logged yet.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

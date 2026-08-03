@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+{% block page_sub %}{{ total }} students found{% endblock %}
+
+{% block content %}
+
+<div class="card-glass card-body-p mb-3">
+  <form method="GET" class="row g-2 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label-modern">Search</label>
+      <input type="text" name="q" value="{{ search }}" data-live-search class="form-control-modern" placeholder="Search by name, ID or email...">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label-modern">Department</label>
+      <select name="department_id" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All Departments</option>
+        {% for d in departments %}
+          <option value="{{ d.department_id }}" {% if department_id == d.department_id %}selected{% endif %}>{{ d.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label-modern">Semester</label>
+      <select name="semester" class="form-select-modern" onchange="this.form.submit()">
+        <option value="">All</option>
+        {% for i in range(1,9) %}
+          <option value="{{ i }}" {% if semester == i %}selected{% endif %}>Sem {{ i }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <a href="{{ url_for('students.index') }}" class="btn btn-outline-soft flex-grow-1"><i class="fa-solid fa-rotate"></i> Reset</a>
+      <a href="{{ url_for('students.add') }}" class="btn btn-primary flex-grow-1"><i class="fa-solid fa-plus"></i> Add</a>
+    </div>
+  </form>
+</div>
+
+<div class="card-glass">
+  <div style="overflow-x:auto;">
+  <table class="table-modern">
+    <thead>
+      <tr><th>Student</th><th>ID</th><th>Department</th><th>Semester</th><th>Gender</th><th>Email</th><th style="text-align:right;">Actions</th></tr>
+    </thead>
+    <tbody>
+    {% for s in students %}
+      <tr>
+        <td style="display:flex;align-items:center;gap:10px;">
+          <div class="avatar-circle">{{ s.name[0]|upper }}</div>
+          <a href="{{ url_for('students.view_profile', student_id=s.student_id) }}" style="font-weight:600;">{{ s.name }}</a>
+        </td>
+        <td>{{ s.student_id }}</td>
+        <td>{{ s.department_name }}</td>
+        <td><span class="badge-status badge-grade">Sem {{ s.semester }}</span></td>
+        <td>{{ s.gender }}</td>
+        <td>{{ s.email or '—' }}</td>
+        <td style="text-align:right;">
+          <a href="{{ url_for('students.edit', student_id=s.student_id) }}" class="btn btn-icon btn-outline-soft btn-sm" title="Edit"><i class="fa-solid fa-pen"></i></a>
+          <a href="{{ url_for('reports.report_card', student_id=s.student_id) }}" class="btn btn-icon btn-outline-soft btn-sm" title="Report Card"><i class="fa-solid fa-file-lines"></i></a>
+          <form method="POST" action="{{ url_for('students.delete', student_id=s.student_id) }}" style="display:inline;" data-confirm="Delete {{ s.name }}? This will remove all their marks too.">
+            <button type="submit" class="btn btn-icon btn-danger-soft btn-sm" title="Delete"><i class="fa-solid fa-trash"></i></button>
+          </form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7">
+        <div class="empty-state">
+          <i class="fa-solid fa-user-graduate"></i>
+          <p>No students found. <a href="{{ url_for('students.add') }}">Add your first student</a>.</p>
+        </div>
+      </td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+{% if total_pages > 1 %}
+<div class="d-flex justify-content-center mt-3">
+  <div class="pagination-modern">
+    {% for p in range(1, total_pages + 1) %}
+      <a href="{{ url_for('students.index', page=p, q=search, department_id=department_id, semester=semester) }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

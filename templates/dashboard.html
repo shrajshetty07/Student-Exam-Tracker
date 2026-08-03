@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block page_sub %}Real-time overview of academic performance{% endblock %}
+
+{% block content %}
+
+<div class="row g-3 mb-2">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-primary"><i class="fa-solid fa-user-graduate"></i></div>
+      <div class="stat-value">{{ stats.total_students }}</div>
+      <div class="stat-label">Total Students</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-info"><i class="fa-solid fa-book"></i></div>
+      <div class="stat-value">{{ stats.total_subjects }}</div>
+      <div class="stat-label">Total Subjects</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-success"><i class="fa-solid fa-percent"></i></div>
+      <div class="stat-value">{{ stats.avg_percentage }}%</div>
+      <div class="stat-label">Average Percentage</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-warning"><i class="fa-solid fa-calendar-check"></i></div>
+      <div class="stat-value">{{ stats.avg_attendance }}%</div>
+      <div class="stat-label">Avg. Attendance</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-2">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-success"><i class="fa-solid fa-arrow-trend-up"></i></div>
+      <div class="stat-value">{{ stats.highest_score }}%</div>
+      <div class="stat-label">Highest Score</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-danger"><i class="fa-solid fa-arrow-trend-down"></i></div>
+      <div class="stat-value">{{ stats.lowest_score }}%</div>
+      <div class="stat-label">Lowest Score</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-success"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="stat-value">{{ stats.pass_percentage }}%</div>
+      <div class="stat-label">Pass Percentage</div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon icon-badge-danger"><i class="fa-solid fa-circle-xmark"></i></div>
+      <div class="stat-value">{{ stats.failed_students }}</div>
+      <div class="stat-label">Failed Records</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-8">
+    <div class="card-glass card-body-p">
+      <div class="section-title">Semester Performance Trend</div>
+      <div class="section-sub mb-3">Average percentage across semesters</div>
+      <canvas id="semesterChart" height="110"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card-glass card-body-p text-center">
+      <div class="section-title">Pass Rate</div>
+      <div class="section-sub mb-3">Overall pass vs fail ratio</div>
+      <div class="gauge-wrap">
+        <canvas id="passGauge"></canvas>
+        <div class="gauge-value">
+          <div class="num">{{ stats.pass_percentage }}%</div>
+          <div class="lbl">Passing</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title">Grade Distribution</div>
+      <div class="section-sub mb-3">Number of records per grade</div>
+      <canvas id="gradeChart" height="180"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-glass card-body-p">
+      <div class="section-title">Subject-wise Average</div>
+      <div class="section-sub mb-3">Top subjects by average percentage</div>
+      <canvas id="subjectChart" height="180"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-lg-7">
+    <div class="card-glass card-body-p">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <div class="section-title">Top 10 Performers</div>
+          <div class="section-sub">Ranked by average percentage</div>
+        </div>
+        <a href="{{ url_for('reports.top_performers_report') }}" class="btn btn-outline-soft btn-sm">View All</a>
+      </div>
+      <div style="overflow-x:auto;">
+      <table class="table-modern">
+        <thead><tr><th>#</th><th>Student</th><th>Avg %</th></tr></thead>
+        <tbody>
+        {% for s in top10 %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td style="display:flex;align-items:center;gap:10px;">
+              <div class="avatar-circle" style="width:28px;height:28px;font-size:0.7rem;">{{ s.name[0]|upper }}</div>
+              {{ s.name }}
+            </td>
+            <td><b>{{ s.avg_percentage|round(2) }}%</b></td>
+          </tr>
+        {% else %}
+          <tr><td colspan="3" class="text-center text-muted py-3">No data yet — add marks to see rankings.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card-glass card-body-p">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div>
+          <div class="section-title"><i class="fa-solid fa-brain" style="color:var(--color-primary);"></i> AI Prediction Summary</div>
+          <div class="section-sub">Model performance snapshot</div>
+        </div>
+      </div>
+      {% if metrics %}
+        <div class="d-flex flex-column gap-2 mt-2">
+          <div class="d-flex justify-content-between"><span class="section-sub">Classifier Accuracy</span><b>{{ (metrics.classification.accuracy * 100)|round(1) }}%</b></div>
+          <div class="progress-track"><div class="progress-fill" style="width:{{ (metrics.classification.accuracy * 100)|round(1) }}%;"></div></div>
+
+          <div class="d-flex justify-content-between mt-2"><span class="section-sub">F1 Score</span><b>{{ (metrics.classification.f1_score * 100)|round(1) }}%</b></div>
+          <div class="progress-track"><div class="progress-fill" style="width:{{ (metrics.classification.f1_score * 100)|round(1) }}%;"></div></div>
+
+          <div class="d-flex justify-content-between mt-2"><span class="section-sub">Regression R² Score</span><b>{{ (metrics.regression.r2_score * 100)|round(1) }}%</b></div>
+          <div class="progress-track"><div class="progress-fill" style="width:{{ (metrics.regression.r2_score * 100)|round(1) }}%;"></div></div>
+
+          <a href="{{ url_for('prediction.index') }}" class="btn btn-primary mt-3"><i class="fa-solid fa-wand-magic-sparkles"></i> Run a Prediction</a>
+          <a href="{{ url_for('prediction.risk_analysis') }}" class="btn btn-outline-soft mt-1"><i class="fa-solid fa-triangle-exclamation"></i> View At-Risk Students</a>
+        </div>
+      {% else %}
+        <div class="empty-state py-3">
+          <i class="fa-solid fa-robot"></i>
+          <p>No model metrics found. Run <code>python ml/train_regression.py</code> and <code>python ml/train_classifier.py</code>.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const semesterLabels = {{ semester_comparison | map(attribute='semester') | list | tojson }};
+const semesterData = {{ semester_comparison | map(attribute='avg_percentage') | list | tojson }};
+
+new Chart(document.getElementById('semesterChart'), {
+  type: 'line',
+  data: {
+    labels: semesterLabels.map(s => 'Sem ' + s),
+    datasets: [{
+      label: 'Avg %', data: semesterData, borderColor: '#4f46e5',
+      backgroundColor: 'rgba(79,70,229,0.12)', fill: true, tension: 0.4, pointRadius: 4,
+    }]
+  },
+  options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+});
+
+new Chart(document.getElementById('passGauge'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Pass', 'Fail'],
+    datasets: [{ data: [{{ stats.pass_percentage }}, {{ 100 - stats.pass_percentage }}], backgroundColor: ['#10b981', '#ef4444'], borderWidth: 0 }]
+  },
+  options: { cutout: '75%', plugins: { legend: { display: false } } }
+});
+
+const gradeLabels = {{ grades | map(attribute='grade') | list | tojson }};
+const gradeData = {{ grades | map(attribute='cnt') | list | tojson }};
+new Chart(document.getElementById('gradeChart'), {
+  type: 'bar',
+  data: { labels: gradeLabels, datasets: [{ label: 'Records', data: gradeData, backgroundColor: '#f59e0b', borderRadius: 6 }] },
+  options: { plugins: { legend: { display: false } } }
+});
+
+const subjLabels = {{ subject_avgs | map(attribute='subject_name') | list | tojson }};
+const subjData = {{ subject_avgs | map(attribute='avg_percentage') | list | tojson }};
+new Chart(document.getElementById('subjectChart'), {
+  type: 'bar',
+  data: { labels: subjLabels, datasets: [{ label: 'Avg %', data: subjData, backgroundColor: '#4f46e5', borderRadius: 6 }] },
+  options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { max: 100 } } }
+});
+</script>
+{% endblock %}
