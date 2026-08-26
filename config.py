@@ -36,7 +36,7 @@ class Config:
     DEFAULT_ADMIN_PASSWORD = os.environ.get("DEFAULT_ADMIN_PASSWORD", "Admin@123")
     DEFAULT_ADMIN_EMAIL = os.environ.get("DEFAULT_ADMIN_EMAIL", "admin@school.edu")
 
-    DEBUG = os.environ.get("FLASK_DEBUG", "True") == "True"
+    DEBUG = os.environ.get("FLASK_DEBUG", "False") == "True"
 
 
 class DevelopmentConfig(Config):
